@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Centrifugal Pump Sizing Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 900px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+    .grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .grid th, .grid td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+    .grid th {
+      background-color: #f5f5f5;
+      text-align: left;
+    }
+    .label-cell {
+      width: 45%;
+    }
+    .units-cell {
+      width: 10%;
+      text-align: center;
+      color: #555;
+    }
+    .type-cell {
+      width: 12%;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #777;
+    }
+    input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      background-color: #e6f4ff; /* light blue for manual inputs */
+    }
+    input[readonly],
+    .readonly {
+      background-color: #f9f9f9;
+    }
+    .note {
+      font-size: 0.82rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+    .status-ok {
+      color: #056608;
+      font-weight: bold;
+    }
+    .status-warn {
+      color: #a30000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Centrifugal Pump Sizing Tool</h1>
+
+  <h2>Hydraulic Duty</h2>
+  
+    <button type="button" onclick="goToPortal()" style="
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #0f6fba;
+  background-color: #ffffff;
+  color: #0f6fba;
+  cursor: pointer;
+  font-size: 0.9rem;
+">
+  ← Back to Equipment Sizing Portal
+</button>
+
+<script>
+  function goToPortal() {
+    // Adjust this path if your master portal is not in the parent folder
+    window.location.href = '../Equipment Sizing Master.html';
+  }
+</script>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Flowrate</td>
+        <td><input id="flowrate" type="number" step="any" value="250"></td>
+        <td class="units-cell">m³/h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Total dynamic head</td>
+        <td><input id="head" type="number" step="any" value="50"></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Fluid density</td>
+        <td><input id="density" type="number" step="any" value="1000"></td>
+        <td class="units-cell">kg/m³</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Pump efficiency</td>
+        <td><input id="efficiency" type="number" step="any" value="70"></td>
+        <td class="units-cell">%</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Shaft power required</td>
+        <td><input id="power" type="number" class="readonly" readonly></td>
+        <td class="units-cell">kW</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    Power is approximated as \( P\,[\text{kW}] \approx \frac{Q\,[\text{m³/h}] \times H\,[\text{m}] \times \rho\,[\text{kg/m³}] \times 9.81}{3.6 \times 10^6 \times \eta} \), with \(\eta\) as decimal efficiency.[web:59]
+  </p>
+
+  <h2>NPSH Check (Available)</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Absolute pressure on liquid surface</td>
+        <td><input id="surfacePressure" type="number" step="any" value="1.013"></td>
+        <td class="units-cell">bar(a)</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Static suction head (positive above pump)</td>
+        <td><input id="staticHead" type="number" step="any" value="3"></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Suction line friction losses</td>
+        <td><input id="suctionFriction" type="number" step="any" value="1"></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Fluid vapor pressure</td>
+        <td><input id="vaporPressure" type="number" step="any" value="0.03"></td>
+        <td class="units-cell">bar(a)</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">NPSH available</td>
+        <td><input id="npsha" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Pump NPSH required (from curve)</td>
+        <td><input id="npshr" type="number" step="any" value="4"></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">NPSH margin (NPSHA − NPSHR)</td>
+        <td><input id="npshMargin" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    NPSH available is approximated as \( \text{NPSHA} = h_1 + h_{ss} - h_f - h_{vp} \) with \(h_1\) and \(h_{vp}\) converted from absolute pressure (bar) to head (m).[web:58][web:60]
+  </p>
+
+  <p class="note">
+    Status: <span id="npshStatus" class="status-ok">–</span>
+  </p>
+
+  <script>
+    function round3(value) {
+      return Math.round((value + Number.EPSILON) * 1000) / 1000;
+    }
+
+    function recalc() {
+      // Hydraulic duty
+      const Q_m3h = parseFloat(document.getElementById('flowrate').value) || 0;
+      const H_m = parseFloat(document.getElementById('head').value) || 0;
+      const rho = parseFloat(document.getElementById('density').value) || 0;
+      const eff_pct = parseFloat(document.getElementById('efficiency').value) || 0;
+
+      const eff = eff_pct > 0 ? eff_pct / 100.0 : 0;
+      let power_kW = 0;
+      if (eff > 0) {
+        // P [kW] ≈ Q[m3/h] * H[m] * rho[kg/m3] * g / (3.6e6 * eff)
+        power_kW = (Q_m3h * H_m * rho * 9.81) / (3600000 * eff);
+      }
+
+      document.getElementById('power').value = round3(power_kW);
+
+      // NPSH
+      const surfaceP_bar = parseFloat(document.getElementById('surfacePressure').value) || 0; // bar(a)
+      const staticHead = parseFloat(document.getElementById('staticHead').value) || 0; // m
+      const suctionFriction = parseFloat(document.getElementById('suctionFriction').value) || 0; // m
+      const vaporP_bar = parseFloat(document.getElementById('vaporPressure').value) || 0; // bar(a)
+      const npshr = parseFloat(document.getElementById('npshr').value) || 0; // m
+
+      // Convert bar to meters of liquid using density: h = P / (rho*g) * 1e5
+      const g = 9.81;
+      const barToPa = 100000;
+      const h1 = rho > 0 ? (surfaceP_bar * barToPa) / (rho * g) : 0;
+      const hvp = rho > 0 ? (vaporP_bar * barToPa) / (rho * g) : 0;
+
+      const npsha_raw = h1 + staticHead - suctionFriction - hvp;
+      const npsha = npsha_raw > 0 ? npsha_raw : 0;
+      const margin = npsha - npshr;
+
+      document.getElementById('npsha').value = round3(npsha);
+      document.getElementById('npshMargin').value = round3(margin);
+
+      const statusSpan = document.getElementById('npshStatus');
+      if (npsha <= 0) {
+        statusSpan.textContent = 'Check suction conditions – NPSHA ≤ 0 m';
+        statusSpan.className = 'status-warn';
+      } else if (margin < 1) {
+        statusSpan.textContent = 'Warning: NPSH margin < 1 m';
+        statusSpan.className = 'status-warn';
+      } else {
+        statusSpan.textContent = 'OK: NPSH margin adequate';
+        statusSpan.className = 'status-ok';
+      }
+    }
+
+    [
+      'flowrate',
+      'head',
+      'density',
+      'efficiency',
+      'surfacePressure',
+      'staticHead',
+      'suctionFriction',
+      'vaporPressure',
+      'npshr'
+    ].forEach(id => {
+      document.getElementById(id).addEventListener('input', recalc);
+    });
+
+    recalc();
+  </script>
+</body>
+</html>

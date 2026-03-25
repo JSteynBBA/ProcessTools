@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stream Properties Calculation Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 1000px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+    .grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .grid th, .grid td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+    .grid th {
+      background-color: #f5f5f5;
+      text-align: left;
+    }
+    .label-cell {
+      width: 45%;
+    }
+    .units-cell {
+      width: 10%;
+      text-align: center;
+      color: #555;
+    }
+    .type-cell {
+      width: 12%;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #777;
+    }
+    input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      background-color: #e6f4ff;
+    }
+    input[readonly],
+    .readonly {
+      background-color: #f9f9f9;
+    }
+    .note {
+      font-size: 0.82rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stream Properties Calculation Tool</h1>
+
+  <h2>Solids and Aqueous Basis</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Solids mass rate</td>
+        <td><input id="sa_solidsMass" type="number" step="any" value="60"></td>
+        <td class="units-cell">t/h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Solids S.G.</td>
+        <td><input id="sa_solidsSG" type="number" step="any" value="3.00"></td>
+        <td class="units-cell">t/m³</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Aqueous mass rate</td>
+        <td><input id="sa_aqueousMass" type="number" step="any" value="100"></td>
+        <td class="units-cell">t/h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Aqueous S.G.</td>
+        <td><input id="sa_aqueousSG" type="number" step="any" value="1.00"></td>
+        <td class="units-cell">t/m³</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Slurry solids mass fraction</td>
+        <td><input id="sa_solidsFraction" type="number" class="readonly" readonly></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Total mass rate</td>
+        <td><input id="sa_totalMass" type="number" class="readonly" readonly></td>
+        <td class="units-cell">t/h</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Total volume rate</td>
+        <td><input id="sa_totalVolume" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m³/h</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Slurry S.G.</td>
+        <td><input id="sa_slurrySG" type="number" class="readonly" readonly></td>
+        <td class="units-cell">t/m³</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    Calculations: Total mass = solids + aqueous; total volume = solids/SG + aqueous/SG; slurry SG = total mass / total volume; solids fraction = solids mass / total mass.
+  </p>
+
+  <h2>Solids Fraction Basis</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Solids mass rate</td>
+        <td><input id="sf_solidsMass" type="number" step="any" value="59.85"></td>
+        <td class="units-cell">t/h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Solids S.G.</td>
+        <td><input id="sf_solidsSG" type="number" step="any" value="3.00"></td>
+        <td class="units-cell">t/m³</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Slurry solids mass fraction (target)</td>
+        <td><input id="sf_solidsFraction" type="number" step="any" value="0.35"></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Aqueous S.G.</td>
+        <td><input id="sf_aqueousSG" type="number" step="any" value="1.00"></td>
+        <td class="units-cell">t/m³</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Aqueous mass rate (calculated)</td>
+        <td><input id="sf_aqueousMass" type="number" class="readonly" readonly></td>
+        <td class="units-cell">t/h</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Total mass rate</td>
+        <td><input id="sf_totalMass" type="number" class="readonly" readonly></td>
+        <td class="units-cell">t/h</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Total volume rate</td>
+        <td><input id="sf_totalVolume" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m³/h</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Slurry S.G.</td>
+        <td><input id="sf_slurrySG" type="number" class="readonly" readonly></td>
+        <td class="units-cell">t/m³</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    Given target solids fraction, back-calculate aqueous mass rate: Aqueous mass = solids mass × (1 − fraction) / fraction.
+  </p>
+
+  <script>
+    function round3(value) {
+      return Math.round((value + Number.EPSILON) * 1000) / 1000;
+    }
+
+    // Solids and Aqueous Basis
+    function recalcSA() {
+      const solidsMass = parseFloat(document.getElementById('sa_solidsMass').value) || 0;
+      const solidsSG = parseFloat(document.getElementById('sa_solidsSG').value) || 0;
+      const aqueousMass = parseFloat(document.getElementById('sa_aqueousMass').value) || 0;
+      const aqueousSG = parseFloat(document.getElementById('sa_aqueousSG').value) || 0;
+
+      const totalMass = solidsMass + aqueousMass;
+      let solidsFraction = 0;
+      if (totalMass > 0) {
+        solidsFraction = solidsMass / totalMass;
+      }
+
+      const solidsVolume = solidsSG > 0 ? solidsMass / solidsSG : 0;
+      const aqueousVolume = aqueousSG > 0 ? aqueousMass / aqueousSG : 0;
+      const totalVolume = solidsVolume + aqueousVolume;
+
+      let slurrySG = 0;
+      if (totalVolume > 0) {
+        slurrySG = totalMass / totalVolume;
+      }
+
+      document.getElementById('sa_solidsFraction').value = round3(solidsFraction);
+      document.getElementById('sa_totalMass').value = round3(totalMass);
+      document.getElementById('sa_totalVolume').value = round3(totalVolume);
+      document.getElementById('sa_slurrySG').value = round3(slurrySG);
+    }
+
+    // Solids Fraction Basis
+    function recalcSF() {
+      const solidsMass = parseFloat(document.getElementById('sf_solidsMass').value) || 0;
+      const solidsSG = parseFloat(document.getElementById('sf_solidsSG').value) || 0;
+      const solidsFraction = parseFloat(document.getElementById('sf_solidsFraction').value) || 0;
+      const aqueousSG = parseFloat(document.getElementById('sf_aqueousSG').value) || 0;
+
+      let aqueousMass = 0;
+      if (solidsFraction > 0 && solidsFraction < 1) {
+        aqueousMass = solidsMass * (1 - solidsFraction) / solidsFraction;
+      }
+
+      const totalMass = solidsMass + aqueousMass;
+
+      const solidsVolume = solidsSG > 0 ? solidsMass / solidsSG : 0;
+      const aqueousVolume = aqueousSG > 0 ? aqueousMass / aqueousSG : 0;
+      const totalVolume = solidsVolume + aqueousVolume;
+
+      let slurrySG = 0;
+      if (totalVolume > 0) {
+        slurrySG = totalMass / totalVolume;
+      }
+
+      document.getElementById('sf_aqueousMass').value = round3(aqueousMass);
+      document.getElementById('sf_totalMass').value = round3(totalMass);
+      document.getElementById('sf_totalVolume').value = round3(totalVolume);
+      document.getElementById('sf_slurrySG').value = round3(slurrySG);
+    }
+
+    // Attach listeners
+    ['sa_solidsMass', 'sa_solidsSG', 'sa_aqueousMass', 'sa_aqueousSG'].forEach(id => {
+      document.getElementById(id).addEventListener('input', recalcSA);
+    });
+
+    ['sf_solidsMass', 'sf_solidsSG', 'sf_solidsFraction', 'sf_aqueousSG'].forEach(id => {
+      document.getElementById(id).addEventListener('input', recalcSF);
+    });
+
+    // Initial calculations
+    recalcSA();
+    recalcSF();
+  </script>
+</body>
+</html>

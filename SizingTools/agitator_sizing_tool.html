@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Agitator Sizing Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 950px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+    .grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .grid th, .grid td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+    .grid th {
+      background-color: #f5f5f5;
+      text-align: left;
+    }
+    .label-cell {
+      width: 45%;
+    }
+    .units-cell {
+      width: 10%;
+      text-align: center;
+      color: #555;
+    }
+    .type-cell {
+      width: 12%;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #777;
+    }
+    input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      background-color: #e6f4ff; /* manual inputs */
+    }
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      background-color: #e6f4ff;
+    }
+    input[readonly],
+    .readonly {
+      background-color: #f9f9f9;
+    }
+    .note {
+      font-size: 0.82rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Agitator Sizing Tool</h1>
+
+  <h2>Tank Geometry & Fluid Properties</h2>
+  
+  <button type="button" onclick="goToPortal()" style="
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #0f6fba;
+  background-color: #ffffff;
+  color: #0f6fba;
+  cursor: pointer;
+  font-size: 0.9rem;
+">
+  ← Back to Equipment Sizing Portal
+</button>
+
+<script>
+  function goToPortal() {
+    // Adjust this path if your master portal is not in the parent folder
+    window.location.href = '../Equipment Sizing Master.html';
+  }
+</script>
+
+  
+  
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Tank diameter (T)</td>
+        <td><input id="tankDiameter" type="number" step="any" value="5"></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Liquid height (H)</td>
+        <td><input id="liquidHeight" type="number" step="any" value="5"></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Fluid density (ρ)</td>
+        <td><input id="density" type="number" step="any" value="1000"></td>
+        <td class="units-cell">kg/m³</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Fluid viscosity (μ)</td>
+        <td><input id="viscosity" type="number" step="any" value="0.001"></td>
+        <td class="units-cell">Pa·s</td>
+        <td class="type-cell">input</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Impeller & Operating Conditions</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Impeller type</td>
+        <td>
+          <select id="impellerType">
+            <option value="rushton">Rushton turbine (Np ≈ 5)</option>
+            <option value="pitched">45° pitched-blade turbine (Np ≈ 1.3)</option>
+            <option value="hydrofoil">Hydrofoil (Np ≈ 0.3)</option>
+          </select>
+        </td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Impeller-to-tank diameter ratio (D/T)</td>
+        <td><input id="dtRatio" type="number" step="any" value="0.33"></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Agitator speed</td>
+        <td><input id="speedRpm" type="number" step="any" value="60"></td>
+        <td class="units-cell">rpm</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Number of impellers</td>
+        <td><input id="numImpellers" type="number" step="1" value="1"></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">input</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Motor Sizing</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Mechanical safety factor</td>
+        <td><input id="loadFactor" type="number" step="any" value="1.15"></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Motor service factor</td>
+        <td><input id="serviceFactor" type="number" step="any" value="1.15"></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Required motor power</td>
+        <td><input id="requiredMotorPower" type="number" class="readonly" readonly></td>
+        <td class="units-cell">kW</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Selected standard motor size</td>
+        <td><input id="selectedMotorSize" type="number" class="readonly" readonly></td>
+        <td class="units-cell">kW</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Calculated Mixing Quantities</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Quantity</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Impeller diameter (D)</td>
+        <td><input id="impellerDiameter" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Tip speed</td>
+        <td><input id="tipSpeed" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m/s</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Reynolds number (Re)</td>
+        <td><input id="reynolds" type="number" class="readonly" readonly></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Assumed power number (Np)</td>
+        <td><input id="powerNumber" type="number" class="readonly" readonly></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Power per impeller</td>
+        <td><input id="powerPerImpeller" type="number" class="readonly" readonly></td>
+        <td class="units-cell">kW</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Total agitator power</td>
+        <td><input id="totalPower" type="number" class="readonly" readonly></td>
+        <td class="units-cell">kW</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    Re = D²·N·ρ / μ (N in r/s), Np based on impeller type (turbulent regime), P = Np·ρ·N³·D⁵, motor power ≈ P·load factor / service factor, rounded up to next standard IEC‑style kW size.[web:70][web:83][web:84][web:90]
+  </p>
+
+  <script>
+    function round3(value) {
+      return Math.round((value + Number.EPSILON) * 1000) / 1000;
+    }
+
+    // Simple list of common IEC-like motor ratings (kW)[web:90][web:96]
+    const standardMotorKW = [
+      0.37, 0.55, 0.75,
+      1.1, 1.5, 2.2, 3, 4, 5.5, 7.5,
+      11, 15, 18.5, 22, 30, 37, 45, 55,
+      75, 90, 110, 132, 160, 200, 250, 315, 355, 400, 450, 500, 560, 630, 710
+    ];
+
+    function getNp(impellerType, Re) {
+      if (Re < 10) {
+        return 20; // placeholder high Np for laminar
+      }
+      switch (impellerType) {
+        case 'rushton':
+          return 5.0;
+        case 'pitched':
+          return 1.3;
+        case 'hydrofoil':
+          return 0.3;
+        default:
+          return 5.0;
+      }
+    }
+
+    function selectMotorSize(requiredKW) {
+      for (let i = 0; i < standardMotorKW.length; i++) {
+        if (standardMotorKW[i] >= requiredKW) {
+          return standardMotorKW[i];
+        }
+      }
+      // If above largest listed, just return required value
+      return requiredKW;
+    }
+
+    function recalc() {
+      const T = parseFloat(document.getElementById('tankDiameter').value) || 0;
+      const H = parseFloat(document.getElementById('liquidHeight').value) || 0;
+      const rho = parseFloat(document.getElementById('density').value) || 0;
+      const mu = parseFloat(document.getElementById('viscosity').value) || 0;
+
+      const impellerType = document.getElementById('impellerType').value;
+      const dtRatio = parseFloat(document.getElementById('dtRatio').value) || 0;
+      const speedRpm = parseFloat(document.getElementById('speedRpm').value) || 0;
+      const numImpellers = parseInt(document.getElementById('numImpellers').value || '1', 10);
+
+      const loadFactor = parseFloat(document.getElementById('loadFactor').value) || 1.0;
+      const serviceFactor = parseFloat(document.getElementById('serviceFactor').value) || 1.0;
+
+      const D = T * dtRatio;
+      const N_rps = speedRpm / 60.0;
+      const tipSpeed = 2 * Math.PI * (D / 2) * N_rps;
+
+      let Re = 0;
+      if (mu > 0) {
+        Re = (D * D * N_rps * rho) / mu;
+      }
+
+      const Np = getNp(impellerType, Re);
+
+      const P_W = Np * rho * Math.pow(N_rps, 3) * Math.pow(D, 5);
+      const P_kW = P_W / 1000.0;
+      const totalP_kW = P_kW * (numImpellers > 0 ? numImpellers : 1);
+
+      // Motor sizing: include mechanical load factor and motor SF[web:84][web:94]
+      let requiredKW = totalP_kW * loadFactor;
+      if (serviceFactor > 0) {
+        requiredKW = requiredKW / serviceFactor;
+      }
+
+      const selectedKW = selectMotorSize(requiredKW);
+
+      document.getElementById('impellerDiameter').value = round3(D);
+      document.getElementById('tipSpeed').value = round3(tipSpeed);
+      document.getElementById('reynolds').value = round3(Re);
+      document.getElementById('powerNumber').value = round3(Np);
+      document.getElementById('powerPerImpeller').value = round3(P_kW);
+      document.getElementById('totalPower').value = round3(totalP_kW);
+      document.getElementById('requiredMotorPower').value = round3(requiredKW);
+      document.getElementById('selectedMotorSize').value = round3(selectedKW);
+    }
+
+    [
+      'tankDiameter',
+      'liquidHeight',
+      'density',
+      'viscosity',
+      'impellerType',
+      'dtRatio',
+      'speedRpm',
+      'numImpellers',
+      'loadFactor',
+      'serviceFactor'
+    ].forEach(id => {
+      document.getElementById(id).addEventListener('input', recalc);
+    });
+
+    recalc();
+  </script>
+</body>
+</html>

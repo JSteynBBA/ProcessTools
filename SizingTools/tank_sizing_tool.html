@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Preliminary Tank Sizing Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 800px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+    .grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .grid th, .grid td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+    .grid th {
+      background-color: #f5f5f5;
+      text-align: left;
+    }
+    .label-cell {
+      width: 45%;
+    }
+    .units-cell {
+      width: 10%;
+      text-align: center;
+      color: #555;
+    }
+    .type-cell {
+      width: 10%;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #777;
+    }
+	input[type="number"] {
+	  width: 100%;
+	  box-sizing: border-box;
+	  padding: 4px 6px;
+	  font-size: 0.9rem;
+	  background-color: #e6f4ff; /* light blue for manual inputs */
+	}
+	input[readonly],
+	.readonly {
+	  background-color: #f9f9f9;
+	}
+    .footer-note {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Preliminary Tank Sizing Tool</h1>
+
+  <h2>Volume Calculation</h2>
+  
+    <button type="button" onclick="goToPortal()" style="
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #0f6fba;
+  background-color: #ffffff;
+  color: #0f6fba;
+  cursor: pointer;
+  font-size: 0.9rem;
+">
+  ← Back to Equipment Sizing Portal
+</button>
+
+<script>
+  function goToPortal() {
+    // Adjust this path if your master portal is not in the parent folder
+    window.location.href = '../Equipment Sizing Master.html';
+  }
+</script>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Total volumetric flowrate in</td>
+        <td>
+          <input id="flowrate" type="number" step="any" value="250">
+        </td>
+        <td class="units-cell">m³/h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Residence time required</td>
+        <td>
+          <input id="residenceTime" type="number" step="any" value="0.5">
+        </td>
+        <td class="units-cell">h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Working volume required</td>
+        <td>
+          <input id="workingVolume" type="number" class="readonly" readonly>
+        </td>
+        <td class="units-cell">m³</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Tank Dimensions</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Height to diameter ratio</td>
+        <td>
+          <input id="hToDRatio" type="number" step="any" value="1.2">
+        </td>
+        <td class="units-cell">m/m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Freeboard required</td>
+        <td>
+          <input id="freeboard" type="number" step="any" value="0.5">
+        </td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Diameter</td>
+        <td>
+          <input id="diameter" type="number" class="readonly" readonly>
+        </td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Shell height (working)</td>
+        <td>
+          <input id="height" type="number" class="readonly" readonly>
+        </td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Final height (incl. freeboard)</td>
+        <td>
+          <input id="finalHeight" type="number" class="readonly" readonly>
+        </td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Final diameter</td>
+        <td>
+          <input id="finalDiameter" type="number" class="readonly" readonly>
+        </td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Final volume</td>
+        <td>
+          <input id="finalVolume" type="number" class="readonly" readonly>
+        </td>
+        <td class="units-cell">m³</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer-note">
+    All calculations are approximate and for preliminary sizing only.
+  </div>
+
+  <script>
+    function round3(value) {
+      return Math.round((value + Number.EPSILON) * 1000) / 1000;
+    }
+
+    function recalc() {
+      const flowrate = parseFloat(document.getElementById('flowrate').value) || 0;
+      const residenceTime = parseFloat(document.getElementById('residenceTime').value) || 0;
+      const hToDRatio = parseFloat(document.getElementById('hToDRatio').value) || 0;
+      const freeboard = parseFloat(document.getElementById('freeboard').value) || 0;
+
+      const workingVolume = flowrate * residenceTime;
+
+      // Height = ratio * diameter, Volume = π * (D/2)^2 * H
+      // => workingVolume = π * (D^2/4) * (ratio * D) = π * ratio * D^3 / 4
+      // => D^3 = workingVolume * 4 / (π * ratio)
+      let diameter = 0;
+      let height = 0;
+      if (hToDRatio > 0) {
+        const dCubed = workingVolume * 4 / (Math.PI * hToDRatio);
+        diameter = dCubed > 0 ? Math.cbrt(dCubed) : 0;
+        height = hToDRatio * diameter;
+      }
+
+      const finalHeight = height + freeboard;
+      const finalDiameter = diameter;
+
+      const finalVolume = Math.PI * Math.pow(finalDiameter / 2, 2) * finalHeight;
+
+      document.getElementById('workingVolume').value = round3(workingVolume);
+      document.getElementById('diameter').value = round3(diameter);
+      document.getElementById('height').value = round3(height);
+      document.getElementById('finalHeight').value = round3(finalHeight);
+      document.getElementById('finalDiameter').value = round3(finalDiameter);
+      document.getElementById('finalVolume').value = round3(finalVolume);
+    }
+
+    ['flowrate', 'residenceTime', 'hToDRatio', 'freeboard'].forEach(id => {
+      document.getElementById(id).addEventListener('input', recalc);
+    });
+
+    recalc();
+  </script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unit Conversion Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 1100px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.2rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+    .grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .grid th, .grid td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+    .grid th {
+      background-color: #f5f5f5;
+      text-align: left;
+    }
+    .label-cell {
+      width: 35%;
+    }
+    input[type="number"], select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      background-color: #e6f4ff;
+    }
+    .note {
+      font-size: 0.82rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    /* Two-column layout */
+    .columns {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-top: 1rem;
+    }
+    .column {
+      flex: 1;
+      min-width: 0;
+    }
+
+    @media (max-width: 800px) {
+      .columns {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Unit Conversion Tool</h1>
+  
+    <button type="button" onclick="goToPortal()" style="
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #0f6fba;
+  background-color: #ffffff;
+  color: #0f6fba;
+  cursor: pointer;
+  font-size: 0.9rem;
+">
+  ← Back to Equipment Sizing Portal
+</button>
+
+<script>
+  function goToPortal() {
+    // Adjust this path if your master portal is not in the parent folder
+    window.location.href = '../Equipment Sizing Master.html';
+  }
+</script>
+
+  <div class="columns">
+    <!-- LEFT COLUMN: mass & volume flow -->
+    <div class="column">
+      <!-- MASS FLOW -->
+      <h2>Mass Flow Rate Input</h2>
+      <table class="grid">
+        <thead>
+          <tr>
+            <th class="label-cell">Quantity</th>
+            <th>Value</th>
+            <th>Units</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">Mass flow rate</td>
+            <td><input id="massValue" type="number" step="any" value="100"></td>
+            <td>
+              <select id="massUnit">
+                <option value="t_h">t/h</option>
+                <option value="kg_s">kg/s</option>
+                <option value="kg_h">kg/h</option>
+                <option value="lb_h">lb/h</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Mass Flow Rate Conversions</h2>
+      <table class="grid" id="massTable">
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <!-- VOLUME FLOW -->
+      <h2>Volume Flow Rate Input</h2>
+      <table class="grid">
+        <thead>
+          <tr>
+            <th class="label-cell">Quantity</th>
+            <th>Value</th>
+            <th>Units</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">Volume flow rate</td>
+            <td><input id="volValue" type="number" step="any" value="250"></td>
+            <td>
+              <select id="volUnit">
+                <option value="m3_h">m³/h</option>
+                <option value="m3_s">m³/s</option>
+                <option value="L_s">L/s</option>
+                <option value="usgpm">US gpm</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Volume Flow Rate Conversions</h2>
+      <table class="grid" id="volTable">
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- RIGHT COLUMN: length & static mass -->
+    <div class="column">
+      <!-- LENGTH -->
+      <h2>Length Input</h2>
+      <table class="grid">
+        <thead>
+          <tr>
+            <th class="label-cell">Quantity</th>
+            <th>Value</th>
+            <th>Units</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">Length</td>
+            <td><input id="lenValue" type="number" step="any" value="1"></td>
+            <td>
+              <select id="lenUnit">
+                <option value="m">m</option>
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="km">km</option>
+                <option value="inch">inch</option>
+                <option value="ft">ft</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Length Conversions</h2>
+      <table class="grid" id="lenTable">
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <!-- STATIC MASS -->
+      <h2>Mass Input</h2>
+      <table class="grid">
+        <thead>
+          <tr>
+            <th class="label-cell">Quantity</th>
+            <th>Value</th>
+            <th>Units</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">Mass</td>
+            <td><input id="massStaticValue" type="number" step="any" value="1"></td>
+            <td>
+              <select id="massStaticUnit">
+                <option value="t">t</option>
+                <option value="kg">kg</option>
+                <option value="g">g</option>
+                <option value="lb">lb</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Mass Conversions</h2>
+      <table class="grid" id="massStaticTable">
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    function round3(value) {
+      return Math.round((value + Number.EPSILON) * 1000) / 1000;
+    }
+
+    // Mass flow units (base kg/s)
+    const massUnits = {
+      t_h:  1000 / 3600,
+      kg_s: 1,
+      kg_h: 1 / 3600,
+      lb_h: 0.45359237 / 3600
+    };
+    const massLabels = {
+      t_h: 't/h',
+      kg_s: 'kg/s',
+      kg_h: 'kg/h',
+      lb_h: 'lb/h'
+    };
+
+    // Volume flow labels (converted via explicit factors)
+    const volLabels = {
+      m3_h: 'm³/h',
+      m3_s: 'm³/s',
+      L_s: 'L/s',
+      usgpm: 'US gpm'
+    };
+
+    // Length units (base m)
+    const lenUnits = {
+      m: 1,
+      mm: 0.001,
+      cm: 0.01,
+      km: 1000,
+      inch: 0.0254,
+      ft: 0.3048
+    };
+    const lenLabels = {
+      m: 'm',
+      mm: 'mm',
+      cm: 'cm',
+      km: 'km',
+      inch: 'inch',
+      ft: 'ft'
+    };
+
+    // Static mass units (base kg)
+    const massStaticUnits = {
+      t: 1000,
+      kg: 1,
+      g: 0.001,
+      lb: 0.45359237
+    };
+    const massStaticLabels = {
+      t: 't',
+      kg: 'kg',
+      g: 'g',
+      lb: 'lb'
+    };
+
+    function recalcMassFlow() {
+      const value = parseFloat(document.getElementById('massValue').value) || 0;
+      const unit = document.getElementById('massUnit').value;
+      const baseKgPerS = value * (massUnits[unit] || 0);
+      const tbody = document.getElementById('massTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      Object.keys(massUnits).forEach(u => {
+        const factor = massUnits[u];
+        const converted = factor ? baseKgPerS / factor : 0;
+        const tr = document.createElement('tr');
+        const tdUnit = document.createElement('td');
+        const tdValue = document.createElement('td');
+        tdUnit.textContent = massLabels[u];
+        tdValue.textContent = isFinite(converted) ? round3(converted) : '';
+        tr.appendChild(tdUnit);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function recalcVolFlow() {
+      const value = parseFloat(document.getElementById('volValue').value) || 0;
+      const unit = document.getElementById('volUnit').value;
+      let baseM3PerH = 0;
+      if (unit === 'm3_h') baseM3PerH = value;
+      else if (unit === 'm3_s') baseM3PerH = value * 3600;
+      else if (unit === 'L_s') baseM3PerH = value * 3.6;
+      else if (unit === 'usgpm') baseM3PerH = value * 0.227124;
+
+      const tbody = document.getElementById('volTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      ['m3_h','m3_s','L_s','usgpm'].forEach(u => {
+        let converted = 0;
+        if (u === 'm3_h') converted = baseM3PerH;
+        else if (u === 'm3_s') converted = baseM3PerH / 3600;
+        else if (u === 'L_s') converted = baseM3PerH / 3.6;
+        else if (u === 'usgpm') converted = baseM3PerH / 0.227124;
+        const tr = document.createElement('tr');
+        const tdUnit = document.createElement('td');
+        const tdValue = document.createElement('td');
+        tdUnit.textContent = volLabels[u];
+        tdValue.textContent = isFinite(converted) ? round3(converted) : '';
+        tr.appendChild(tdUnit);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function recalcLength() {
+      const value = parseFloat(document.getElementById('lenValue').value) || 0;
+      const unit = document.getElementById('lenUnit').value;
+      const baseM = value * (lenUnits[unit] || 0);
+      const tbody = document.getElementById('lenTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      Object.keys(lenUnits).forEach(u => {
+        const factor = lenUnits[u];
+        const converted = factor ? baseM / factor : 0;
+        const tr = document.createElement('tr');
+        const tdUnit = document.createElement('td');
+        const tdValue = document.createElement('td');
+        tdUnit.textContent = lenLabels[u];
+        tdValue.textContent = isFinite(converted) ? round3(converted) : '';
+        tr.appendChild(tdUnit);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+      });
+    }
+
+    function recalcMassStatic() {
+      const value = parseFloat(document.getElementById('massStaticValue').value) || 0;
+      const unit = document.getElementById('massStaticUnit').value;
+      const baseKg = value * (massStaticUnits[unit] || 0);
+      const tbody = document.getElementById('massStaticTable').querySelector('tbody');
+      tbody.innerHTML = '';
+      Object.keys(massStaticUnits).forEach(u => {
+        const factor = massStaticUnits[u];
+        const converted = factor ? baseKg / factor : 0;
+        const tr = document.createElement('tr');
+        const tdUnit = document.createElement('td');
+        const tdValue = document.createElement('td');
+        tdUnit.textContent = massStaticLabels[u];
+        tdValue.textContent = isFinite(converted) ? round3(converted) : '';
+        tr.appendChild(tdUnit);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+      });
+    }
+
+    ['massValue','massUnit'].forEach(id =>
+      document.getElementById(id).addEventListener('input', recalcMassFlow)
+    );
+    ['volValue','volUnit'].forEach(id =>
+      document.getElementById(id).addEventListener('input', recalcVolFlow)
+    );
+    ['lenValue','lenUnit'].forEach(id =>
+      document.getElementById(id).addEventListener('input', recalcLength)
+    );
+    ['massStaticValue','massStaticUnit'].forEach(id =>
+      document.getElementById(id).addEventListener('input', recalcMassStatic)
+    );
+
+    recalcMassFlow();
+    recalcVolFlow();
+    recalcLength();
+    recalcMassStatic();
+  </script>
+</body>
+</html>

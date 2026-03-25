@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thickener / Clarifier Sizing Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 1000px;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+    .grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .grid th, .grid td {
+      border: 1px solid #ddd;
+      padding: 6px 8px;
+      font-size: 0.9rem;
+    }
+    .grid th {
+      background-color: #f5f5f5;
+      text-align: left;
+    }
+    .label-cell {
+      width: 45%;
+    }
+    .units-cell {
+      width: 12%;
+      text-align: center;
+      color: #555;
+    }
+    .type-cell {
+      width: 12%;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #777;
+    }
+    input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      background-color: #e6f4ff; /* manual inputs */
+    }
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 4px 6px;
+      font-size: 0.9rem;
+      background-color: #e6f4ff;
+    }
+    input[readonly],
+    .readonly {
+      background-color: #f9f9f9;
+    }
+    .note {
+      font-size: 0.82rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+    .status-ok {
+      color: #056608;
+      font-weight: bold;
+    }
+    .status-warn {
+      color: #a30000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Thickener / Clarifier Sizing Tool</h1>
+
+  <h2>Feed & Solids Data</h2>
+    <button type="button" onclick="goToPortal()" style="
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #0f6fba;
+  background-color: #ffffff;
+  color: #0f6fba;
+  cursor: pointer;
+  font-size: 0.9rem;
+">
+  ← Back to Equipment Sizing Portal
+</button>
+
+<script>
+  function goToPortal() {
+    // Adjust this path if your master portal is not in the parent folder
+    window.location.href = '../Equipment Sizing Master.html';
+  }
+</script>
+  
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Feed volumetric flowrate</td>
+        <td><input id="feedFlow" type="number" step="any" value="500"></td>
+        <td class="units-cell">m³/h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Feed slurry density</td>
+        <td><input id="slurryDensity" type="number" step="any" value="1.2"></td>
+        <td class="units-cell">t/m³</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Feed solids mass fraction</td>
+        <td><input id="solidsMassFrac" type="number" step="any" value="0.25"></td>
+        <td class="units-cell">–</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Design solids flux limit</td>
+        <td><input id="designSolidsFlux" type="number" step="any" value="0.5"></td>
+        <td class="units-cell">t/(m²·h)</td>
+        <td class="type-cell">input</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Hydraulic (Overflow) Design</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Parameter</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Design rise rate / surface overflow rate</td>
+        <td><input id="designRiseRate" type="number" step="any" value="1.0"></td>
+        <td class="units-cell">m/h</td>
+        <td class="type-cell">input</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Minimum thickener side water depth</td>
+        <td><input id="minDepth" type="number" step="any" value="3.0"></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">input</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Calculated Solids & Area</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Quantity</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Solids throughput</td>
+        <td><input id="solidsThroughput" type="number" class="readonly" readonly></td>
+        <td class="units-cell">t/h</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Area by solids flux</td>
+        <td><input id="areaByFlux" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m²</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Area by rise rate</td>
+        <td><input id="areaByRise" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m²</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Governing design area</td>
+        <td><input id="governingArea" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m²</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Tank Geometry (Preliminary)</h2>
+  <table class="grid">
+    <thead>
+      <tr>
+        <th class="label-cell">Quantity</th>
+        <th>Value</th>
+        <th class="units-cell">Units</th>
+        <th class="type-cell">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-cell">Thickener diameter</td>
+        <td><input id="thickenerDiameter" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Water depth (sidewall)</td>
+        <td><input id="waterDepth" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+      <tr>
+        <td class="label-cell">Tank volume (water zone only)</td>
+        <td><input id="tankVolume" type="number" class="readonly" readonly></td>
+        <td class="units-cell">m³</td>
+        <td class="type-cell">calculation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="note">
+    Solids flux sizing uses area = solids throughput / design solids flux (t/h ÷ t/(m²·h)).[web:100][web:113]
+    Hydraulic sizing uses area = flow ÷ rise rate (m³/h ÷ m/h).[web:109]
+  </p>
+
+  <p class="note">
+    Status: <span id="designStatus" class="status-ok">–</span>
+  </p>
+
+  <script>
+    function round3(value) {
+      return Math.round((value + Number.EPSILON) * 1000) / 1000;
+    }
+
+    function recalc() {
+      const feedFlow = parseFloat(document.getElementById('feedFlow').value) || 0;           // m3/h
+      const slurryDensity = parseFloat(document.getElementById('slurryDensity').value) || 0; // t/m3
+      const solidsMassFrac = parseFloat(document.getElementById('solidsMassFrac').value) || 0; // -
+      const designSolidsFlux = parseFloat(document.getElementById('designSolidsFlux').value) || 0; // t/(m2·h)
+
+      const designRiseRate = parseFloat(document.getElementById('designRiseRate').value) || 0; // m/h
+      const minDepth = parseFloat(document.getElementById('minDepth').value) || 0; // m
+
+      // Solids throughput (t/h)
+      const solidsThroughput = feedFlow * slurryDensity * solidsMassFrac;
+
+      // Area by solids flux (m2)
+      let areaByFlux = 0;
+      if (designSolidsFlux > 0) {
+        areaByFlux = solidsThroughput / designSolidsFlux;
+      }
+
+      // Area by rise rate (m2)
+      let areaByRise = 0;
+      if (designRiseRate > 0) {
+        areaByRise = feedFlow / designRiseRate;
+      }
+
+      const governingArea = Math.max(areaByFlux, areaByRise);
+
+      // Diameter from area (A = pi*D^2/4)
+      let D = 0;
+      if (governingArea > 0) {
+        D = Math.sqrt(4 * governingArea / Math.PI);
+      }
+
+      const waterDepth = minDepth;
+      const tankVolume = governingArea * waterDepth;
+
+      document.getElementById('solidsThroughput').value = round3(solidsThroughput);
+      document.getElementById('areaByFlux').value = round3(areaByFlux);
+      document.getElementById('areaByRise').value = round3(areaByRise);
+      document.getElementById('governingArea').value = round3(governingArea);
+      document.getElementById('thickenerDiameter').value = round3(D);
+      document.getElementById('waterDepth').value = round3(waterDepth);
+      document.getElementById('tankVolume').value = round3(tankVolume);
+
+      const statusSpan = document.getElementById('designStatus');
+      if (governingArea === 0) {
+        statusSpan.textContent = 'Check inputs – area is zero';
+        statusSpan.className = 'status-warn';
+      } else if (areaByFlux > areaByRise) {
+        statusSpan.textContent = 'Governing by solids flux (check settling tests / flux curve)';
+        statusSpan.className = 'status-ok';
+      } else if (areaByRise > areaByFlux) {
+        statusSpan.textContent = 'Governing by hydraulic rise rate (check overflow criteria)';
+        statusSpan.className = 'status-ok';
+      } else {
+        statusSpan.textContent = 'Flux and rise rate give similar area';
+        statusSpan.className = 'status-ok';
+      }
+    }
+
+    [
+      'feedFlow',
+      'slurryDensity',
+      'solidsMassFrac',
+      'designSolidsFlux',
+      'designRiseRate',
+      'minDepth'
+    ].forEach(id => {
+      document.getElementById(id).addEventListener('input', recalc);
+    });
+
+    recalc();
+  </script>
+</body>
+</html>
