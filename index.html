@@ -97,79 +97,81 @@
     </ul>
   </div>
 
-  <script>
-    // Central configuration: scalable list of equipment sizing tools
-    const equipmentPages = [
-	{
-	  id: 'streamProps',
-	  label: 'Stream Properties',
-	  description: 'Slurry mass, volume, S.G. and solids fraction',
-	  file: 'SizingTools/stream_properties_tool.html'
-	},
-	  {
-        id: 'tank',
-        label: 'Tank Sizing',
-        description: 'Preliminary CSTR / storage tank volume and dimensions',
-        file: 'SizingTools/tank_sizing_tool.html'
-      },
-      {
-        id: 'agitator',
-        label: 'Agitator Sizing',
-        description: 'Impeller power, speed and motor sizing',
-        file: 'SizingTools/agitator_sizing_tool.html'
-      },
-      {
-        id: 'pump',
-        label: 'Centrifugal Pump Sizing',
-        description: 'Duty, NPSH and power requirements',
-        file: 'SizingTools/pump_sizing_tool.html'
-      },
-      {
-        id: 'beltFilter',
-        label: 'Belt Filter Sizing',
-        description: 'Filtration area and capacity (future tool)',
-        file: 'sizingtools/belt_filter_sizing_tool.html'
-      },
-      {
-        id: 'thickener',
-        label: 'Thickener / Clarifier Sizing',
-        description: 'Area, diameter and rise rate checks',
-        file: 'SizingTools/thickener_sizing_tool.html'
-      },
-	  {
-        id: 'unit conversion',
-        label: 'Unit Conversion',
-        description: 'Mass and volume flow unit conversions',
-        file: 'SizingTools/unit_conversion_tool.html'
-      },
-	  {
-  		id: 'pipe',
-		label: 'Pipe Sizing',
-		description: 'Preliminary line diameter and standard size selection',
-		file: 'sizingtools/pipe_sizing_tool.html'
-	  }
-      // Add more tools here as needed
-    ];
-
-    function createButtons() {
-      const container = document.getElementById('equipment-buttons');
-      equipmentPages.forEach(page => {
-        const btn = document.createElement('button');
-        btn.className = 'equip-button';
-        btn.type = 'button';
-        btn.dataset.file = page.file;
-        btn.innerHTML = `
-          <span class="type">${page.label}</span>
-          <span class="desc">${page.description}</span>
-        `;
-        btn.addEventListener('click', () => {
-          window.location.href = page.file;
-        });
-        container.appendChild(btn);
-      });
+<script>
+  // Central configuration: scalable list of equipment sizing tools
+  const equipmentPages = [
+    {
+      id: 'streamProps',
+      label: 'Stream Properties',
+      description: 'Slurry mass, volume, S.G. and solids fraction',
+      file: 'SizingTools/stream_properties_tool.html'
+    },
+    {
+      id: 'tank',
+      label: 'Tank Sizing',
+      description: 'Preliminary CSTR / storage tank volume and dimensions',
+      file: 'SizingTools/tank_sizing_tool.html'
+    },
+    {
+      id: 'agitator',
+      label: 'Agitator Sizing',
+      description: 'Impeller power, speed and motor sizing',
+      file: 'SizingTools/agitator_sizing_tool.html'
+    },
+    {
+      id: 'pump',
+      label: 'Centrifugal Pump Sizing',
+      description: 'Duty, NPSH and power requirements',
+      file: 'SizingTools/pump_sizing_tool.html'
+    },
+    {
+      id: 'beltFilter',
+      label: 'Belt Filter Sizing',
+      description: 'Filtration area and capacity (future tool)',
+      file: 'SizingTools/belt_filter_sizing_tool.html'
+    },
+    {
+      id: 'thickener',
+      label: 'Thickener / Clarifier Sizing',
+      description: 'Area, diameter and rise rate checks',
+      file: 'SizingTools/thickener_sizing_tool.html'
+    },
+    {
+      id: 'unitConversion',
+      label: 'Unit Conversion',
+      description: 'Mass and volume flow unit conversions',
+      file: 'SizingTools/unit_conversion_tool.html'
+    },
+    {
+      id: 'pipe',
+      label: 'Pipe Sizing',
+      description: 'Preliminary line diameter and standard size selection',
+      file: 'SizingTools/pipe_sizing_tool.html'
     }
+    // Add more tools here as needed
+  ];
 
-    createButtons();
-  </script>
+  function createButtons() {
+    const container = document.getElementById('equipment-buttons');
+    container.innerHTML = '';
+
+    equipmentPages.forEach(page => {
+      const btn = document.createElement('button');
+      btn.className = 'equip-button';
+      btn.type = 'button';
+      btn.dataset.file = page.file;
+      btn.innerHTML = `
+        <span class="type">${page.label}</span>
+        <span class="desc">${page.description}</span>
+      `;
+      btn.addEventListener('click', () => {
+        window.location.href = page.file;
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  createButtons();
+</script>
 </body>
 </html>
