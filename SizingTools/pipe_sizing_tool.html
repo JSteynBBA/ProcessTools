@@ -87,25 +87,6 @@
   </style>
 </head>
 <body>
-      <button type="button" onclick="goToPortal()" style="
-  margin-bottom: 12px;
-  padding: 6px 12px;
-  border-radius: 4px;
-  border: 1px solid #0f6fba;
-  background-color: #ffffff;
-  color: #0f6fba;
-  cursor: pointer;
-  font-size: 0.9rem;
-">
-  ← Back to Equipment Sizing Portal
-</button>
-
-<script>
-  function goToPortal() {
-    // Adjust this path if your master portal is not in the parent folder
-    window.location.href = '../index.html';
-  }
-
   <h1>Preliminary Pipe Sizing Tool</h1>
 
   <div class="columns">
@@ -197,6 +178,18 @@
       <p class="note">The required area is calculated from volumetric flow divided by target velocity, and the required diameter is calculated from the circular area relation.[file:177]</p>
     </div>
   </div>
+      <button type="button" onclick="goToPortal()" style="
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #0f6fba;
+      background-color: #ffffff;
+      color: #0f6fba;
+      cursor: pointer;
+      font-size: 0.9rem;
+    ">
+      ← Back to Equipment Sizing Portal
+    </button>
 
   <script>
     function goToPortal() {
