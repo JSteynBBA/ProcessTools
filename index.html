@@ -101,6 +101,12 @@
   // Central configuration: scalable list of equipment sizing tools
   const equipmentPages = [
     {
+      id: 'pipe',
+      label: 'Pipe Sizing',
+      description: 'Preliminary line diameter and standard size selection',
+      file: 'SizingTools/pipe_sizing_tool.html'
+    },
+    {
       id: 'streamProps',
       label: 'Stream Properties',
       description: 'Slurry mass, volume, S.G. and solids fraction',
@@ -141,12 +147,6 @@
       label: 'Unit Conversion',
       description: 'Mass and volume flow unit conversions',
       file: 'SizingTools/unit_conversion_tool.html'
-    },
-    {
-      id: 'pipe',
-      label: 'Pipe Sizing',
-      description: 'Preliminary line diameter and standard size selection',
-      file: 'SizingTools/pipe_sizing_tool.html'
     }
     // Add more tools here as needed
   ];
