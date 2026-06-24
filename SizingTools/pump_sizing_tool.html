@@ -2,19 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Centrifugal Pump Sizing Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preliminary Pipe Sizing Tool</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      max-width: 900px;
+      max-width: 1100px;
+      color: #222;
     }
     h1 {
       font-size: 1.6rem;
       margin-bottom: 0.5rem;
     }
     h2 {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       margin-top: 1.5rem;
       border-bottom: 1px solid #ccc;
       padding-bottom: 0.25rem;
@@ -33,11 +35,9 @@
       background-color: #f5f5f5;
       text-align: left;
     }
-    .label-cell {
-      width: 45%;
-    }
+    .label-cell { width: 42%; }
     .units-cell {
-      width: 10%;
+      width: 12%;
       text-align: center;
       color: #555;
     }
@@ -47,236 +47,267 @@
       font-size: 0.8rem;
       color: #777;
     }
-    input[type="number"] {
+    input[type="number"], select {
       width: 100%;
       box-sizing: border-box;
       padding: 4px 6px;
       font-size: 0.9rem;
-      background-color: #e6f4ff; /* light blue for manual inputs */
+      background-color: #e6f4ff;
     }
-    input[readonly],
-    .readonly {
+    input[readonly], .readonly {
       background-color: #f9f9f9;
+    }
+    .columns {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+    .column {
+      flex: 1;
+      min-width: 0;
     }
     .note {
       font-size: 0.82rem;
       color: #666;
       margin-top: 0.5rem;
     }
-    .status-ok {
-      color: #056608;
-      font-weight: bold;
+    .nav-button {
+      margin-bottom: 12px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #0f6fba;
+      background-color: #ffffff;
+      color: #0f6fba;
+      cursor: pointer;
+      font-size: 0.9rem;
     }
-    .status-warn {
-      color: #a30000;
-      font-weight: bold;
+    .nav-button:hover {
+      background-color: #f0f7fd;
+    }
+    @media (max-width: 900px) {
+      .columns { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-  <h1>Centrifugal Pump Sizing Tool</h1>
+  <button type="button" class="nav-button" onclick="goToPortal()">← Back to Equipment Sizing Portal</button>
 
-  <h2>Hydraulic Duty</h2>
-  
-    <button type="button" onclick="goToPortal()" style="
-  margin-bottom: 12px;
-  padding: 6px 12px;
-  border-radius: 4px;
-  border: 1px solid #0f6fba;
-  background-color: #ffffff;
-  color: #0f6fba;
-  cursor: pointer;
-  font-size: 0.9rem;
-">
-  ← Back to Equipment Sizing Portal
-</button>
+  <h1>Preliminary Pipe Sizing Tool</h1>
 
-<script>
-  function goToPortal() {
-    // Adjust this path if your master portal is not in the parent folder
-    window.location.href = '../index.html';
-  }
-</script>
-  <table class="grid">
-    <thead>
-      <tr>
-        <th class="label-cell">Parameter</th>
-        <th>Value</th>
-        <th class="units-cell">Units</th>
-        <th class="type-cell">Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="label-cell">Flowrate</td>
-        <td><input id="flowrate" type="number" step="any" value="250"></td>
-        <td class="units-cell">m³/h</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Total dynamic head</td>
-        <td><input id="head" type="number" step="any" value="50"></td>
-        <td class="units-cell">m</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Fluid density</td>
-        <td><input id="density" type="number" step="any" value="1000"></td>
-        <td class="units-cell">kg/m³</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Pump efficiency</td>
-        <td><input id="efficiency" type="number" step="any" value="70"></td>
-        <td class="units-cell">%</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Shaft power required</td>
-        <td><input id="power" type="number" class="readonly" readonly></td>
-        <td class="units-cell">kW</td>
-        <td class="type-cell">calculation</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="columns">
+    <div class="column">
+      <h2>Required Pipe Size</h2>
+      <table class="grid">
+        <thead>
+          <tr>
+            <th class="label-cell">Parameter</th>
+            <th>Value</th>
+            <th class="units-cell">Units</th>
+            <th class="type-cell">Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">Volumetric flow</td>
+            <td><input id="flowrate" type="number" step="any" value="20"></td>
+            <td class="units-cell">m³/h</td>
+            <td class="type-cell">input</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Flow velocity required</td>
+            <td><input id="velocityRequired" type="number" step="any" value="2.0"></td>
+            <td class="units-cell">m/s</td>
+            <td class="type-cell">input</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Flow area required</td>
+            <td><input id="areaRequired" type="number" class="readonly" readonly></td>
+            <td class="units-cell">m²</td>
+            <td class="type-cell">calculation</td>
+          </tr>
+          <tr>
+            <td class="label-cell">Line diameter required</td>
+            <td><input id="diameterRequired" type="number" class="readonly" readonly></td>
+            <td class="units-cell">mm</td>
+            <td class="type-cell">calculation</td>
+          </tr>
+        </tbody>
+      </table>
 
-  <p class="note">
-    Power is approximated as \( P\,[\text{kW}] \approx \frac{Q\,[\text{m³/h}] \times H\,[\text{m}] \times \rho\,[\text{kg/m³}] \times 9.81}{3.6 \times 10^6 \times \eta} \), with \(\eta\) as decimal efficiency.[web:59]
-  </p>
+      <h2>Selected Standard Sizes</h2>
+      <table class="grid">
+        <thead>
+          <tr>
+            <th class="label-cell">Selection</th>
+            <th>Metric (mm)</th>
+            <th class="units-cell">Inch</th>
+            <th class="type-cell">Velocity (m/s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="label-cell">Line size down</td>
+            <td><input id="lineDownMM" type="number" class="readonly" readonly></td>
+            <td class="units-cell"><input id="lineDownIn" type="number" class="readonly" readonly></td>
+            <td class="type-cell"><input id="lineDownVel" type="number" class="readonly" readonly></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Closest line</td>
+            <td><input id="lineClosestMM" type="number" class="readonly" readonly></td>
+            <td class="units-cell"><input id="lineClosestIn" type="number" class="readonly" readonly></td>
+            <td class="type-cell"><input id="lineClosestVel" type="number" class="readonly" readonly></td>
+          </tr>
+          <tr>
+            <td class="label-cell">Line size up</td>
+            <td><input id="lineUpMM" type="number" class="readonly" readonly></td>
+            <td class="units-cell"><input id="lineUpIn" type="number" class="readonly" readonly></td>
+            <td class="type-cell"><input id="lineUpVel" type="number" class="readonly" readonly></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <h2>NPSH Check (Available)</h2>
-  <table class="grid">
-    <thead>
-      <tr>
-        <th class="label-cell">Parameter</th>
-        <th>Value</th>
-        <th class="units-cell">Units</th>
-        <th class="type-cell">Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="label-cell">Absolute pressure on liquid surface</td>
-        <td><input id="surfacePressure" type="number" step="any" value="1.013"></td>
-        <td class="units-cell">bar(a)</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Static suction head (positive above pump)</td>
-        <td><input id="staticHead" type="number" step="any" value="3"></td>
-        <td class="units-cell">m</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Suction line friction losses</td>
-        <td><input id="suctionFriction" type="number" step="any" value="1"></td>
-        <td class="units-cell">m</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Fluid vapor pressure</td>
-        <td><input id="vaporPressure" type="number" step="any" value="0.03"></td>
-        <td class="units-cell">bar(a)</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">NPSH available</td>
-        <td><input id="npsha" type="number" class="readonly" readonly></td>
-        <td class="units-cell">m</td>
-        <td class="type-cell">calculation</td>
-      </tr>
-      <tr>
-        <td class="label-cell">Pump NPSH required (from curve)</td>
-        <td><input id="npshr" type="number" step="any" value="4"></td>
-        <td class="units-cell">m</td>
-        <td class="type-cell">input</td>
-      </tr>
-      <tr>
-        <td class="label-cell">NPSH margin (NPSHA − NPSHR)</td>
-        <td><input id="npshMargin" type="number" class="readonly" readonly></td>
-        <td class="units-cell">m</td>
-        <td class="type-cell">calculation</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p class="note">
-    NPSH available is approximated as \( \text{NPSHA} = h_1 + h_{ss} - h_f - h_{vp} \) with \(h_1\) and \(h_{vp}\) converted from absolute pressure (bar) to head (m).[web:58][web:60]
-  </p>
-
-  <p class="note">
-    Status: <span id="npshStatus" class="status-ok">–</span>
-  </p>
+    <div class="column">
+      <h2>Standard Line Sizes</h2>
+      <table class="grid" id="sizesTable">
+        <thead>
+          <tr>
+            <th>Line Size (mm)</th>
+            <th>Area (mm²)</th>
+            <th>Velocity (m/s)</th>
+            <th>Diameter (in)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="note">The required area is calculated from volumetric flow divided by target velocity, and the required diameter is calculated from the circular area relation.</p>
+    </div>
+  </div>
 
   <script>
+    function goToPortal() {
+      window.location.href = '../index.html';
+    }
+
     function round3(value) {
       return Math.round((value + Number.EPSILON) * 1000) / 1000;
     }
 
-    function recalc() {
-      // Hydraulic duty
-      const Q_m3h = parseFloat(document.getElementById('flowrate').value) || 0;
-      const H_m = parseFloat(document.getElementById('head').value) || 0;
-      const rho = parseFloat(document.getElementById('density').value) || 0;
-      const eff_pct = parseFloat(document.getElementById('efficiency').value) || 0;
+    const standardSizes = [
+      { inch: 0.125, mm: 6 },
+      { inch: 0.25, mm: 8 },
+      { inch: 0.375, mm: 10 },
+      { inch: 0.5, mm: 15 },
+      { inch: 0.75, mm: 20 },
+      { inch: 1, mm: 25 },
+      { inch: 2, mm: 50 },
+      { inch: 3, mm: 75 },
+      { inch: 4, mm: 100 },
+      { inch: 6, mm: 150 },
+      { inch: 8, mm: 200 },
+      { inch: 10, mm: 250 },
+      { inch: 12, mm: 300 },
+      { inch: 14, mm: 350 },
+      { inch: 18, mm: 450 },
+      { inch: 20, mm: 500 },
+      { inch: 22, mm: 550 },
+      { inch: 24, mm: 600 },
+      { inch: 26, mm: 650 },
+      { inch: 28, mm: 700 },
+      { inch: 30, mm: 750 },
+      { inch: 32, mm: 800 },
+      { inch: 34, mm: 850 },
+      { inch: 36, mm: 900 },
+      { inch: 38, mm: 950 },
+      { inch: 40, mm: 1000 },
+      { inch: 42, mm: 1050 },
+      { inch: 44, mm: 1100 },
+      { inch: 46, mm: 1150 },
+      { inch: 48, mm: 1200 }
+    ];
 
-      const eff = eff_pct > 0 ? eff_pct / 100.0 : 0;
-      let power_kW = 0;
-      if (eff > 0) {
-        // P [kW] ≈ Q[m3/h] * H[m] * rho[kg/m3] * g / (3.6e6 * eff)
-        power_kW = (Q_m3h * H_m * rho * 9.81) / (3600000 * eff);
-      }
-
-      document.getElementById('power').value = round3(power_kW);
-
-      // NPSH
-      const surfaceP_bar = parseFloat(document.getElementById('surfacePressure').value) || 0; // bar(a)
-      const staticHead = parseFloat(document.getElementById('staticHead').value) || 0; // m
-      const suctionFriction = parseFloat(document.getElementById('suctionFriction').value) || 0; // m
-      const vaporP_bar = parseFloat(document.getElementById('vaporPressure').value) || 0; // bar(a)
-      const npshr = parseFloat(document.getElementById('npshr').value) || 0; // m
-
-      // Convert bar to meters of liquid using density: h = P / (rho*g) * 1e5
-      const g = 9.81;
-      const barToPa = 100000;
-      const h1 = rho > 0 ? (surfaceP_bar * barToPa) / (rho * g) : 0;
-      const hvp = rho > 0 ? (vaporP_bar * barToPa) / (rho * g) : 0;
-
-      const npsha_raw = h1 + staticHead - suctionFriction - hvp;
-      const npsha = npsha_raw > 0 ? npsha_raw : 0;
-      const margin = npsha - npshr;
-
-      document.getElementById('npsha').value = round3(npsha);
-      document.getElementById('npshMargin').value = round3(margin);
-
-      const statusSpan = document.getElementById('npshStatus');
-      if (npsha <= 0) {
-        statusSpan.textContent = 'Check suction conditions – NPSHA ≤ 0 m';
-        statusSpan.className = 'status-warn';
-      } else if (margin < 1) {
-        statusSpan.textContent = 'Warning: NPSH margin < 1 m';
-        statusSpan.className = 'status-warn';
-      } else {
-        statusSpan.textContent = 'OK: NPSH margin adequate';
-        statusSpan.className = 'status-ok';
-      }
+    function diameterAreaMm2(mm) {
+      return Math.PI * Math.pow(mm, 2) / 4;
     }
 
-    [
-      'flowrate',
-      'head',
-      'density',
-      'efficiency',
-      'surfacePressure',
-      'staticHead',
-      'suctionFriction',
-      'vaporPressure',
-      'npshr'
-    ].forEach(id => {
-      document.getElementById(id).addEventListener('input', recalc);
-    });
+    function velocityFor(flowM3h, areaMm2) {
+      if (areaMm2 <= 0) return 0;
+      const areaM2 = areaMm2 / 1000000;
+      const flowM3s = flowM3h / 3600;
+      return flowM3s / areaM2;
+    }
 
-    recalc();
+    function renderTable(flowM3h) {
+      const tbody = document.querySelector('#sizesTable tbody');
+      tbody.innerHTML = '';
+      standardSizes.forEach(size => {
+        const area = diameterAreaMm2(size.mm);
+        const vel = velocityFor(flowM3h, area);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${round3(size.mm)}</td>
+          <td>${round3(area)}</td>
+          <td>${round3(vel)}</td>
+          <td>${round3(size.inch)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function setLine(prefix, item, flowM3h) {
+      if (!item) {
+        document.getElementById(prefix + 'MM').value = '';
+        document.getElementById(prefix + 'In').value = '';
+        document.getElementById(prefix + 'Vel').value = '';
+        return;
+      }
+      document.getElementById(prefix + 'MM').value = round3(item.mm);
+      document.getElementById(prefix + 'In').value = round3(item.inch);
+      document.getElementById(prefix + 'Vel').value = round3(velocityFor(flowM3h, diameterAreaMm2(item.mm)));
+    }
+
+    function recalc() {
+      const flowM3h = parseFloat(document.getElementById('flowrate').value) || 0;
+      const velocityReq = parseFloat(document.getElementById('velocityRequired').value) || 0;
+
+      let areaReq = 0;
+      let diameterReqMm = 0;
+
+      if (velocityReq > 0) {
+        const flowM3s = flowM3h / 3600;
+        areaReq = flowM3s / velocityReq;
+        diameterReqMm = Math.sqrt((4 * areaReq / Math.PI)) * 1000;
+      }
+
+      document.getElementById('areaRequired').value = round3(areaReq);
+      document.getElementById('diameterRequired').value = round3(diameterReqMm);
+
+      let down = null;
+      let up = null;
+      let closest = null;
+
+      for (const size of standardSizes) {
+        if (size.mm <= diameterReqMm) down = size;
+        if (!up && size.mm >= diameterReqMm) up = size;
+      }
+
+      if (!down) down = standardSizes[0];
+      if (!up) up = standardSizes[standardSizes.length - 1];
+
+      closest = Math.abs(down.mm - diameterReqMm) <= Math.abs(up.mm - diameterReqMm) ? down : up;
+
+      setLine('lineDown', down, flowM3h);
+      setLine('lineClosest', closest, flowM3h);
+      setLine('lineUp', up, flowM3h);
+      renderTable(flowM3h);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      ['flowrate', 'velocityRequired'].forEach(id => {
+        document.getElementById(id).addEventListener('input', recalc);
+      });
+      recalc();
+    });
   </script>
 </body>
 </html>
